@@ -1,5 +1,22 @@
 ## OAuth
 
+A note about this exercise. This is not a "paint by numbers" OAuth exercise. We have left room for you to apply the things you already have some experience with:
+
+* routes
+* requiring core modules 
+* middleware (Use the Galvanize Learning Experience if you need a refresher!)
+* local environment variables
+* configuring environment variables on Heroku
+* deploying to Heroku 
+
+What _is_ provided in this exercise is still _way_ friendlier than most OAuth documentation. So, consider this your friendly introduction. 
+
+__YOU SHOULD:__
+
+* Read errors in your _server logs_
+* Double check environment variables
+* Read through the documentation here when you are stuck and see what you missed!
+
 ### The basic OAuth2 web flow is:
 
 ![](http://41.media.tumblr.com/dc0ed4febc896d5d0589fc2940e52a42/tumblr_mp08klMuDm1qax653o1_1280.jpg)
@@ -204,7 +221,7 @@ __NOTE:__ This route isn't going to respond with a `redirect` or a `render`. It'
 to call the middleware function. You won't pass in a `callback` function here.
 
 What else do you need to add to this route file for this function to work?
-If you don't know yet, don't worry, you'll get an error telling you all about it.
+If you don't know yet, don't worry, you'll get an error telling you all about it. Check your server logs!
 
 __#2 Add a route for logging out__
 
