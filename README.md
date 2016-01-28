@@ -95,7 +95,7 @@ __#6 Set a HOST environment variable__
 For your app to work both locally and on production, it will need to know what URL it's being served from.  
 To do so, add a HOST environment variable to `.env`.
 
-__#1 Set a HOST environment variable locally to your localhost__
+__#1 Set a HOST environment variable locally to your localhost (EXAMPLE: `http://localhost:3000/`__
 
 __#2 Set a HOST environment variable on Heroku to your Heroku URL__
 
