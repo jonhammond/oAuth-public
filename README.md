@@ -16,6 +16,7 @@ __YOU SHOULD:__
 * Read errors in your _server logs_
 * Double check environment variables
 * Read through the documentation here when you are stuck and see what you missed!
+* Google that!
 
 ### The basic OAuth2 web flow is:
 
