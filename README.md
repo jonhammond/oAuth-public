@@ -90,13 +90,14 @@ If you can't remember how to do that, Google it. Something like `set Heroku conf
 
 Verify that your app still works correctly on Heroku.
 
-__#6 Set the HOST environment variable__
+__#6 Set a HOST environment variable__
 
 For your app to work both locally and on production, it will need to know what URL it's being served from.  
 To do so, add a HOST environment variable to `.env`.
 
-__#1 Set the HOST environment variable locally to your localhost__
-__#2 Set the HOST environment variable on Heroku to your Heroku URL__
+__#1 Set a HOST environment variable locally to your localhost__
+
+__#2 Set a HOST environment variable on Heroku to your Heroku URL__
 
 
 NOTE: do _not_ include the trailing slash.  So `https://guarded-inlet-5817.herokuapp.com` instead of `https://guarded-inlet-5817.herokuapp.com/`
