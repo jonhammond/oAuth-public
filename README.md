@@ -158,6 +158,10 @@ passport.use(new LinkedInStrategy({
     callbackURL: process.env.HOST + "/auth/linkedin/callback"
   },
   function(token, tokenSecret, profile, done) {
+    // To keep the example simple, the user's LinkedIn profile is returned to
+    // represent the logged-in user. In a typical application, you would want
+    // to associate the LinkedIn account with a user record in your database,
+    // and return that user instead (so perform a knex query here later.)
     done(null, profile)
   }
 ));
@@ -168,10 +172,13 @@ Finally, tell Passport how to store the user's information in the session cookie
 ```js
 // above app.use('/', routes);...
 passport.serializeUser(function(user, done) {
+ // later this will be where you selectively send to the browser an identifier for your user, 
+ // like their primary key from the database, or their ID from linkedin
   done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
+  //here is where you will go to the database and get the user each time from it's id, after you set up your db
   done(null, user)
 });
 ```
