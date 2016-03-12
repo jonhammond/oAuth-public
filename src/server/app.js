@@ -15,8 +15,41 @@ var knex = require('./db/knex');
 if ( !process.env.NODE_ENV ) { require('dotenv').config(); }
 
 
-// PASSPORT YAY! SIKE!
+// *** routes *** //
+var routes = require('./routes/index.js');
 
+
+// *** express instance *** //
+var app = express();
+
+
+// *** view engine *** //
+var swig = new swig.Swig();
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+
+
+// *** static directory *** //
+app.set('views', path.join(__dirname, 'views'));
+
+
+// *** config middleware *** //
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cookieSession({
+  name: 'linkedin-oauth-session-example',
+  keys: [process.env.COOKIE_KEY1, process.env.COOKIE_KEY2]
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(express.static(path.join(__dirname, '../client')));
+
+
+
+// PASSPORT YAY! SIKE!
 passport.use(new LinkedInStrategy({
   clientID: process.env.LINKEDIN_API_KEY,
   clientSecret: process.env.LINKEDIN_SECRET_KEY,
@@ -24,11 +57,13 @@ passport.use(new LinkedInStrategy({
   scope: ['r_emailaddress', 'r_basicprofile'],
   state: true
 }, function(accessToken, refreshToken, profile, done) {
+  console.log("test:", profile);
   knex('users')
   .where('linkedin_id', profile.id)
   .orWhere('email', profile.emails[0].id)
   .first()
   .then(function(user) {
+    // console.log("test:", user);
     if(!user) {
       return knex('users').insert({
         linkedin_id: profile.id,
@@ -76,38 +111,6 @@ passport.deserializeUser(function(user, done) {
       done();
     }
   });
-
-// *** routes *** //
-var routes = require('./routes/index.js');
-
-
-// *** express instance *** //
-var app = express();
-
-
-// *** view engine *** //
-var swig = new swig.Swig();
-app.engine('html', swig.renderFile);
-app.set('view engine', 'html');
-
-
-// *** static directory *** //
-app.set('views', path.join(__dirname, 'views'));
-
-
-// *** config middleware *** //
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(cookieSession({
-  name: 'linkedin-oauth-session-example',
-  keys: [process.env.COOKIE_KEY1, process.env.COOKIE_KEY2]
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(express.static(path.join(__dirname, '../client')));
 
 
 // *** main routes *** //
