@@ -10,6 +10,8 @@ var auth = require('./routes/auth');
 var cookieSession = require('cookie-session');
 var passport = require('passport');
 var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+var knex = require('./db/knex');
+
 if ( !process.env.NODE_ENV ) { require('dotenv').config(); }
 
 
@@ -19,12 +21,35 @@ passport.use(new LinkedInStrategy({
   clientID: process.env.LINKEDIN_API_KEY,
   clientSecret: process.env.LINKEDIN_SECRET_KEY,
   callbackURL: "http://localhost:3000/auth/linkedin/callback",
+  scope: ['r_emailaddress', 'r_basicprofile'],
   state: true
 }, function(accessToken, refreshToken, profile, done) {
-  process.nextTick(function () {
-    return done(null, profile);
+  knex('users')
+  .where('linkedin_id', profile.id)
+  .orWhere('email', profile.emails[0].id)
+  .first()
+  .then(function(user) {
+    if(!user) {
+      return knex('users').insert({
+        linkedin_id: profile.id,
+        email: profile.emails[0].value,
+        preferred_name: profile.name.givenName,
+        last_name: profile.name.familyName,
+        avatar_url: profile.photos[0].value
+      }, id).then(function(id) {
+        return done(null, id[0]);
+      });
+    } else {
+      return done(null, user.id);
+    }
   });
 }));
+
+//   process.nextTick(function () {
+
+//     return done(null, { id: profile.id, displayName: profile.displayName, photo: profile.photos[0].value, email: profile.emails[0].value });
+//   });
+// }));
 
 passport.serializeUser(function(user, done) {
   //later this will be where you selectively send to the browser
@@ -37,8 +62,20 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   // here is where you will go to the database and get the
   // user each time from it's id, after you set up your db
-  done(null, user);
-});
+  if ( userId ) {
+    knex('users')
+      .where({ id:userId })
+      .first()
+      .then(function(user){
+        ( !user ) ? done() : done(null, user);
+      })
+      .catch(function(err) {
+        done(err, null);
+      });
+    } else {
+      done();
+    }
+  });
 
 // *** routes *** //
 var routes = require('./routes/index.js');
