@@ -97,9 +97,10 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   // here is where you will go to the database and get the
   // user each time from it's id, after you set up your db
-  if ( userId ) {
+  if ( user ) {
+    console.log("user:",user);
     knex('users')
-      .where({ id:userId })
+      .where({ id:user })
       .first()
       .then(function(user){
         ( !user ) ? done() : done(null, user);
